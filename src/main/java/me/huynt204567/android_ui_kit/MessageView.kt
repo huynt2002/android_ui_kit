@@ -33,10 +33,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import me.huynt204567.android_ui_kit.R
 
 sealed interface MessageType {
-    @Stable data class Image(val painter: Painter) : MessageType
+    @Stable data class Image(val content: String? = null, val painter: Painter) : MessageType
 
     data class Text(val content: String) : MessageType
 }
@@ -90,29 +89,29 @@ fun MessageView(
         if (messageConfig.userName != null) Text(messageConfig.userName)
     }
     val messageContent: @Composable () -> Unit = {
+        val textColor =
+            if (!messageConfig.trailing) MaterialTheme.colorScheme.onSecondary
+            else MaterialTheme.colorScheme.onPrimary
+        val backgroundColor =
+            if (!messageConfig.trailing) MaterialTheme.colorScheme.secondary
+            else MaterialTheme.colorScheme.primary
+        val backgroundShape =
+            if (!messageConfig.trailing)
+                RoundedCornerShape(
+                    bottomStart = 8.dp,
+                    bottomEnd = 8.dp,
+                    topStart = 0.dp,
+                    topEnd = 8.dp,
+                )
+            else
+                RoundedCornerShape(
+                    bottomStart = 8.dp,
+                    bottomEnd = 8.dp,
+                    topStart = 8.dp,
+                    topEnd = 0.dp,
+                )
         when (messageType) {
             is MessageType.Text -> {
-                val textColor =
-                    if (!messageConfig.trailing) MaterialTheme.colorScheme.onSecondary
-                    else MaterialTheme.colorScheme.onPrimary
-                val backgroundColor =
-                    if (!messageConfig.trailing) MaterialTheme.colorScheme.secondary
-                    else MaterialTheme.colorScheme.primary
-                val backgroundShape =
-                    if (!messageConfig.trailing)
-                        RoundedCornerShape(
-                            bottomStart = 8.dp,
-                            bottomEnd = 8.dp,
-                            topStart = 0.dp,
-                            topEnd = 8.dp,
-                        )
-                    else
-                        RoundedCornerShape(
-                            bottomStart = 8.dp,
-                            bottomEnd = 8.dp,
-                            topStart = 8.dp,
-                            topEnd = 0.dp,
-                        )
                 Box(
                     modifier =
                         Modifier.background(color = backgroundColor, shape = backgroundShape)
@@ -123,6 +122,18 @@ fun MessageView(
                 }
             }
             is MessageType.Image -> {
+                messageType.content?.let {
+                    Box(
+                        modifier =
+                            Modifier.background(color = backgroundColor, shape = backgroundShape)
+                                .padding(12.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(text = it, color = textColor)
+                    }
+                }
+
+                Spacer(Modifier.size(4.dp))
                 Image(
                     painter = messageType.painter,
                     contentDescription = null,
@@ -187,7 +198,8 @@ private fun MessageView_Preview() {
             messageConfig = MessageConfig(trailing = true),
         )
         MessageView(
-            messageType = MessageType.Image(painter = painterResource(R.drawable.image_test))
+            messageType =
+                MessageType.Image("look at this!", painter = painterResource(R.drawable.image_test))
         )
         MessageView(
             messageType = MessageType.Text("This is my image"),
