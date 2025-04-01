@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "me.huynt204567.ui_kit"
+    namespace = "me.huynt204567.android_ui_kit"
     compileSdk = 35
 
     defaultConfig {

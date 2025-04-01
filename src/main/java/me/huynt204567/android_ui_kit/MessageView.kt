@@ -1,4 +1,4 @@
-package me.huynt204567.ui_kit
+package me.huynt204567.android_ui_kit
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -33,7 +33,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import me.huynt204567.ui_kit.R
+import me.huynt204567.android_ui_kit.R
 
 sealed interface MessageType {
     @Stable data class Image(val painter: Painter) : MessageType
